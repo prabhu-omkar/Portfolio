@@ -405,7 +405,7 @@ function start() {
       projects: 'Models, tools and products I have built',
       about: 'Who I am, where I have worked, what I use',
       achievements: 'Wins, rankings, research and scholarships',
-      photography: 'Shot and edited as time_froze',
+      photography: 'My photos, posted as time_froze',
     };
     openPanel({
       meta: [`The ${c.piece}`],

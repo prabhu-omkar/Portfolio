@@ -38,7 +38,7 @@ export const TIMELINE = [
     id: 'puc', piece: 'pawn', date: '2021 – 2023',
     title: 'Pre-University',
     sub: 'Physics, Chemistry, Maths and Computer Science',
-    stats: [['96%', '1st PUC'], ['93%', '2nd PUC'], ['4,203', 'KCET, top 5 in my college', 'rank'], ['90.07', 'JEE Main, top 3 in my college', 'percentile']],
+    stats: [['96%', '1st PUC'], ['93%', '2nd PUC'], ['4,203', 'KCET, top 5 in college', 'rank'], ['90.07', 'JEE Main, top 3 in college', 'percentile']],
     story: [
       'Maths has always been my favourite subject: the kind of problem I will happily sit with long after I need to. Pre-University put it next to Physics, Chemistry and Computer Science, and that pairing of maths and computing is still what I do today.',
       'It showed in the entrance exams. I finished in the top 5 of my college in KCET with a rank of 4,203, and in the top 3 in JEE Main with a 90.07 percentile. That took me to Mathematics & Computing at RUAS.',
@@ -198,17 +198,18 @@ export const SKILLS = [
   ['Systems & security', ['C++', 'OpenMP', 'MPI', 'Cryptography', 'OpenTelemetry']],
 ];
 
-// Photos from time_froze on Pinterest, displayed as themed tiles.
-const pin = (id) => `https://i.pinimg.com/736x/${id}.jpg`;
-const PHOTOS = [
-  ['70/f9/be/70f9be3c5ffbbfc30049c2e6a4e60adb', 'Elephant in the long grass', 'A temple elephant half-hidden in roadside scrub'],
-  ['99/a2/d3/99a2d3f1833c520d2192f891aebadadc', 'Festival chariot', 'A wooden chariot lit up against the fairground crowd'],
-  ['3f/a8/4a/3fa84af122b39812b25c52473c5e1420', 'Vintage chrome', 'Chrome trim and curves on a heritage car'],
-  ['0c/a7/22/0ca722d00c57678908d521e7e12bb6ee', 'Rock-cut cave hall', 'Pillars and carvings inside an ancient stone hall'],
-  ['34/c1/a6/34c1a6eddb6c36f44e7bdb953c6c8ad7', 'Monsoon statue', 'A statue in scaffolding under a dark monsoon sky'],
-  ['5f/ba/89/5fba8999a772e27d1a570d907e0c4f2a', 'Footsteps to the sea', 'Bare footprints trailing into the surf at sunset'],
-  ['d4/ed/79/d4ed79db69e4047b0ce14a6e809fd70d', 'City at night', 'An aerial view of a city grid glowing after dark'],
-];
+// Photos from time_froze on Pinterest. To host them yourself, save the files
+// into /photos and change src/full to e.g. 'photos/elephant.jpg'.
+const pin = (id, size) => `https://i.pinimg.com/${size}/${id}.jpg`;
+export const PHOTOS = [
+  ['70/f9/be/70f9be3c5ffbbfc30049c2e6a4e60adb', 'Elephant in the long grass'],
+  ['99/a2/d3/99a2d3f1833c520d2192f891aebadadc', 'Festival chariot, with the fair behind it'],
+  ['3f/a8/4a/3fa84af122b39812b25c52473c5e1420', 'Chrome on a vintage car'],
+  ['0c/a7/22/0ca722d00c57678908d521e7e12bb6ee', 'Inside a rock-cut cave hall'],
+  ['34/c1/a6/34c1a6eddb6c36f44e7bdb953c6c8ad7', 'A statue in scaffolding under a monsoon sky'],
+  ['5f/ba/89/5fba8999a772e27d1a570d907e0c4f2a', 'Footsteps to the sea at sunset'],
+  ['d4/ed/79/d4ed79db69e4047b0ce14a6e809fd70d', 'A city at night, from the air'],
+].map(([id, caption]) => ({ src: pin(id, '736x'), full: pin(id, 'originals'), caption }));
 
 /* ================= HTML builders ================= */
 
@@ -271,29 +272,29 @@ function projectsHTML() {
 }
 
 function aboutHTML() {
+  const tl = (arr) => `<ul class="tiles proj ach">${arr.map(([t, k, x, h]) => `
+    <li><strong>${h ? `<a href="${h}" target="_blank" rel="noopener">${esc(t)}</a>` : esc(t)}</strong>${k ? `<span class="kind">${esc(k)}</span>` : ''}<span>${esc(x)}</span></li>`).join('')}</ul>`;
   return `
-    <p class="lede">I'm Omkar, a Mathematics & Computing undergraduate in Bengaluru. I like problems where the maths matters: entity resolution at Amazon-challenge scale, vision models for Kolam art, and right now, graph neural networks over two complete fruit-fly brains.</p>
-    <div class="story"><p>I usually end up building the whole product around a model too, from backends to browser extensions. That is how a reverse Pac-Man, a post-quantum crypto scanner and a cursor marathon measured in light years all ended up on my GitHub.</p></div>
+    <p class="lede">I'm Omkar, a Mathematics & Computing student in Bengaluru who likes problems where the maths matters, and building the whole product around a model once it works.</p>
     ${sheet([['9.0', 'CGPA'], ['2027', 'Graduating'], ['Bengaluru', 'Based in']])}
+    <div class="story"><p>Right now I am working on graph neural networks that match neurons across two complete fruit-fly brains. Before that, I built an entity-resolution pipeline for the Amazon ML Challenge, a Kolam classifier that became a conference paper, and products ranging from a food-waste platform to a post-quantum crypto scanner.</p></div>
     ${sub('Experience')}
-    <ol class="xp">${EXPERIENCE.map((x) => `
-      <li>
-        <div class="xp-head"><h4>${esc(x.role)}</h4><time>${esc(x.when)}</time></div>
-        <p class="xp-org">${esc(x.org)}, ${esc(x.where)}</p>
-        <ul class="hl">${x.points.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>
-      </li>`).join('')}
-    </ol>
+    <ul class="tiles proj">${EXPERIENCE.map((x) => `
+      <li><strong>${esc(x.role)}</strong><span class="kind">${esc(x.org)}, ${esc(x.when)}</span>${x.points.map((p) => `<span>${esc(p)}</span>`).join('')}</li>`).join('')}
+    </ul>
     ${sub('Toolbox')}
-    <dl class="skills">${SKILLS.map(([g, list]) => `<div><dt>${esc(g)}</dt><dd>${list.map(esc).join(', ')}</dd></div>`).join('')}</dl>
+    ${tl(SKILLS.map(([g, list]) => [g, '', list.join(', ')]))}
     ${sub('Away from the keyboard')}
-    <dl class="skills">
-      <div><dt>Photography</dt><dd>I shoot as <a href="${PROFILE.links.photos}" target="_blank" rel="noopener">time_froze</a> and I am a member of the university photography club</dd></div>
-      <div><dt>Cubing</dt><dd>3×3 in 35 seconds at best; also 2×2, 4×4 and Pyraminx</dd></div>
-      <div><dt>Cooking</dt><dd>The other place I experiment</dd></div>
-    </dl>
+    ${tl([
+      ['Photography', 'RUAS photography club', 'I post my photos on Pinterest as time_froze', PROFILE.links.photos],
+      ['Cubing', '3×3 best: 35 seconds', 'I also solve 2×2, 4×4 and Pyraminx'],
+      ['Cooking', '', 'The other place I like to experiment'],
+    ])}
     ${sub('Contact')}
-    ${links([['GitHub', PROFILE.links.github], ['LinkedIn', PROFILE.links.linkedin]])}
-    ${PROFILE.email ? `<p class="email">${esc(PROFILE.email)}</p>` : ''}`;
+    ${tl([
+      ['GitHub', 'prabhu-omkar', 'Code for everything on this site', PROFILE.links.github],
+      ['LinkedIn', 'Omkar Prabhu', 'Experience and updates', PROFILE.links.linkedin],
+    ].concat(PROFILE.email ? [['Email', '', PROFILE.email]] : []))}`;
 }
 
 function achievementsHTML() {
@@ -309,20 +310,37 @@ function achievementsHTML() {
 
 function photographyHTML() {
   return `
-    <p class="lede">I shoot as <em>time_froze</em> — finding the stillness in things that move: a temple elephant mid-stride, festival light caught in chrome, monsoon clouds swallowing a statue whole.</p>
+    ${sheet([[String(PHOTOS.length), 'Photos here'], ['time_froze', 'My name on Pinterest'], ['2025', 'Joined the RUAS photography club']])}
     <div class="story">
-      <p>Most of what I photograph is on the street: religious processions, heritage cars, crumbling cave temples, cities from the air at night. The camera is a Nikon; the editing is minimal — I want the scene, not a filter. I am a member of the photography club at RUAS, and everything I keep ends up on Pinterest.</p>
+      <p>Photography is how I slow down. I mostly shoot wildlife, festivals, architecture, landscapes and the small details people walk past, and I like finding light and composition in everyday places.</p>
+      <p>I have been a member of the photography club at RUAS since May 2025, and I post my pictures on Pinterest as time_froze.</p>
     </div>
-    <ul class="tiles proj ach photo-tiles">${PHOTOS.map(([id, t, desc]) => `
-      <li><img class="tile-thumb" src="${pin(id)}" alt="${esc(t)}" loading="lazy"><strong>${esc(t)}</strong><span>${esc(desc)}</span></li>`).join('')}
+    ${sub('Gallery')}
+    <ul class="tiles shots">${PHOTOS.map((p, i) => `
+      <li><button type="button" class="ph" data-i="${i}" aria-label="Open ${esc(p.caption)}"><img src="${p.src}" alt="${esc(p.caption)}" loading="lazy"></button><span>${esc(p.caption)}</span></li>`).join('')}
+      <li class="pin">
+        <img class="pin-avatar" src="https://i.pinimg.com/280x280_RS/59/a8/b8/59a8b87dc4acee009f37ff5b4ebcb5c0.jpg" alt="" loading="lazy">
+        <strong><a href="${PROFILE.links.photos}" target="_blank" rel="noopener">time_froze</a></strong>
+        <span>All of my photos are on Pinterest</span>
+        <span class="pin-cta">Open profile</span>
+      </li>
     </ul>
-    ${links([['View all on Pinterest', PROFILE.links.photos]])}`;
+    <div class="lightbox" hidden><button type="button" class="lb-close" aria-label="Close photo">×</button><img alt=""><p></p></div>`;
 }
 
 export const PROMO_RENDER = { projects: projectsHTML, about: aboutHTML, achievements: achievementsHTML, photography: photographyHTML };
 
 // Interactivity inside a rendered panel (project filters).
 export function wirePanel(root) {
+  const lb = root.querySelector('.lightbox');
+  if (lb) {
+    const img = lb.querySelector('img'); const cap = lb.querySelector('p');
+    root.querySelectorAll('.ph').forEach((b) => b.addEventListener('click', () => {
+      const p = PHOTOS[+b.dataset.i];
+      img.src = p.full; img.alt = p.caption; cap.textContent = p.caption; lb.hidden = false;
+    }));
+    lb.addEventListener('click', () => { lb.hidden = true; img.src = ''; });
+  }
   const btns = root.querySelectorAll('.filters button');
   btns.forEach((b) => b.addEventListener('click', () => {
     btns.forEach((x) => x.classList.toggle('on', x === b));
