@@ -264,19 +264,10 @@ code { font: 0.86em ui-monospace, 'Cascadia Mono', Consolas, monospace; color: v
 .ledger strong a:hover { color: var(--accent); }
 .ledger span { color: var(--muted); font-size: 0.92rem; }
 
-.photos { columns: 3 220px; column-gap: 12px; margin: 4px 0 18px; }
-.photos figure { margin: 0 0 14px; break-inside: avoid; }
-.ph { display: block; width: 100%; overflow: hidden; border-radius: 4px; border: 1px solid var(--line); cursor: zoom-in; }
-.ph img { width: 100%; height: auto; display: block; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.4s; filter: saturate(0.92); }
-.ph:hover img { transform: scale(1.03); filter: saturate(1.05); }
-.photos figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
-.lightbox {
-  position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-  padding: 40px; background: rgba(0, 0, 0, 0.92); cursor: zoom-out;
-}
-.lightbox img { max-width: 100%; max-height: calc(100% - 50px); object-fit: contain; border-radius: 3px; }
-.lightbox p { margin: 0; color: var(--muted) !important; font-size: 0.9rem; }
-.lb-close { position: absolute; top: 14px; right: 18px; font-size: 1.8rem; color: var(--muted); }
+/* pinterest embed */
+.pin-board { margin: 8px 0 24px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #111318; }
+.pin-board span[data-pin-href] { border-radius: 6px !important; overflow: hidden; }
+.pin-board a[data-pin-do] { display: block; }
 .email { font-size: 0.95rem; user-select: all; }
 
 /* ---------- phones ---------- */

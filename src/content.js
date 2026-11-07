@@ -198,18 +198,8 @@ export const SKILLS = [
   ['Systems & security', ['C++', 'OpenMP', 'MPI', 'Cryptography', 'OpenTelemetry']],
 ];
 
-// Photos from time_froze on Pinterest. To host them yourself, save the files
-// into /photos and change src/full to e.g. 'photos/elephant.jpg'.
-const pin = (id, size) => `https://i.pinimg.com/${size}/${id}.jpg`;
-export const PHOTOS = [
-  ['70/f9/be/70f9be3c5ffbbfc30049c2e6a4e60adb', 'Elephant in the long grass'],
-  ['99/a2/d3/99a2d3f1833c520d2192f891aebadadc', 'Festival chariot, with the fair behind it'],
-  ['3f/a8/4a/3fa84af122b39812b25c52473c5e1420', 'Chrome on a vintage car'],
-  ['0c/a7/22/0ca722d00c57678908d521e7e12bb6ee', 'Inside a rock-cut cave hall'],
-  ['34/c1/a6/34c1a6eddb6c36f44e7bdb953c6c8ad7', 'A statue in scaffolding under a monsoon sky'],
-  ['5f/ba/89/5fba8999a772e27d1a570d907e0c4f2a', 'Footsteps to the sea at sunset'],
-  ['d4/ed/79/d4ed79db69e4047b0ce14a6e809fd70d', 'A city at night, from the air'],
-].map(([id, caption]) => ({ src: pin(id, '736x'), full: pin(id, 'originals'), caption }));
+// Pinterest profile is embedded directly in the photography panel.
+// Photos are loaded live from Pinterest — no local image data needed.
 
 /* ================= HTML builders ================= */
 
@@ -310,27 +300,31 @@ function achievementsHTML() {
 
 function photographyHTML() {
   return `
-    <p class="lede">I shoot under the name time_froze: temple elephants, festival chariots, old cars up close. Anything worth stopping for.</p>
-    <div class="story"><p>I am a member of the photography club at RUAS. Tap any photo to see it larger.</p></div>
-    <div class="photos">${PHOTOS.map((p, i) => `
-      <figure><button type="button" class="ph" data-i="${i}" aria-label="Open ${esc(p.caption)}"><img src="${p.src}" alt="${esc(p.caption)}" loading="lazy"></button><figcaption>${esc(p.caption)}</figcaption></figure>`).join('')}
+    <p class="lede">I shoot as <em>time_froze</em> — finding the stillness in things that move: a temple elephant mid-stride, festival light caught in chrome, monsoon clouds swallowing a statue whole.</p>
+    <div class="story">
+      <p>Most of what I photograph is on the street: religious processions, heritage cars, crumbling cave temples, cities from the air at night. The camera is a Nikon; the editing is minimal — I want the scene, not a filter. I am a member of the photography club at RUAS, and everything I keep ends up on Pinterest.</p>
     </div>
-    ${links([['See more on Pinterest', PROFILE.links.photos]])}
-    <div class="lightbox" hidden><button type="button" class="lb-close" aria-label="Close photo">×</button><img alt=""><p></p></div>`;
+    ${sheet([['time_froze', 'Pinterest handle'], ['Street', 'Primary genre'], ['Nikon', 'Camera']])}
+    <div class="pin-board">
+      <a data-pin-do="embedUser" href="https://in.pinterest.com/time_froze/" data-pin-board-width="900" data-pin-scale-height="500" data-pin-scale-width="115"></a>
+    </div>
+    ${links([['View full profile on Pinterest', PROFILE.links.photos]])}`;
 }
 
 export const PROMO_RENDER = { projects: projectsHTML, about: aboutHTML, achievements: achievementsHTML, photography: photographyHTML };
 
 // Interactivity inside a rendered panel (project filters).
 export function wirePanel(root) {
-  const lb = root.querySelector('.lightbox');
-  if (lb) {
-    const img = lb.querySelector('img'); const cap = lb.querySelector('p');
-    root.querySelectorAll('.ph').forEach((b) => b.addEventListener('click', () => {
-      const p = PHOTOS[+b.dataset.i];
-      img.src = p.full; img.alt = p.caption; cap.textContent = p.caption; lb.hidden = false;
-    }));
-    lb.addEventListener('click', () => { lb.hidden = true; img.src = ''; });
+  // Load Pinterest widget script if a pin-board is present
+  const pinBoard = root.querySelector('.pin-board');
+  if (pinBoard && !document.querySelector('script[src*="pinit.js"]')) {
+    const s = document.createElement('script');
+    s.src = 'https://assets.pinterest.com/js/pinit.js';
+    s.async = true;
+    s.defer = true;
+    document.body.appendChild(s);
+  } else if (pinBoard && window.PinUtils) {
+    window.PinUtils.build();
   }
   const btns = root.querySelectorAll('.filters button');
   btns.forEach((b) => b.addEventListener('click', () => {
