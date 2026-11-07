@@ -198,8 +198,17 @@ export const SKILLS = [
   ['Systems & security', ['C++', 'OpenMP', 'MPI', 'Cryptography', 'OpenTelemetry']],
 ];
 
-// Pinterest profile is embedded directly in the photography panel.
-// Photos are loaded live from Pinterest — no local image data needed.
+// Photos from time_froze on Pinterest, displayed as themed tiles.
+const pin = (id) => `https://i.pinimg.com/736x/${id}.jpg`;
+const PHOTOS = [
+  ['70/f9/be/70f9be3c5ffbbfc30049c2e6a4e60adb', 'Elephant in the long grass', 'A temple elephant half-hidden in roadside scrub'],
+  ['99/a2/d3/99a2d3f1833c520d2192f891aebadadc', 'Festival chariot', 'A wooden chariot lit up against the fairground crowd'],
+  ['3f/a8/4a/3fa84af122b39812b25c52473c5e1420', 'Vintage chrome', 'Chrome trim and curves on a heritage car'],
+  ['0c/a7/22/0ca722d00c57678908d521e7e12bb6ee', 'Rock-cut cave hall', 'Pillars and carvings inside an ancient stone hall'],
+  ['34/c1/a6/34c1a6eddb6c36f44e7bdb953c6c8ad7', 'Monsoon statue', 'A statue in scaffolding under a dark monsoon sky'],
+  ['5f/ba/89/5fba8999a772e27d1a570d907e0c4f2a', 'Footsteps to the sea', 'Bare footprints trailing into the surf at sunset'],
+  ['d4/ed/79/d4ed79db69e4047b0ce14a6e809fd70d', 'City at night', 'An aerial view of a city grid glowing after dark'],
+];
 
 /* ================= HTML builders ================= */
 
@@ -304,28 +313,16 @@ function photographyHTML() {
     <div class="story">
       <p>Most of what I photograph is on the street: religious processions, heritage cars, crumbling cave temples, cities from the air at night. The camera is a Nikon; the editing is minimal — I want the scene, not a filter. I am a member of the photography club at RUAS, and everything I keep ends up on Pinterest.</p>
     </div>
-    ${sheet([['time_froze', 'Pinterest handle'], ['Street', 'Primary genre'], ['Nikon', 'Camera']])}
-    <div class="pin-board">
-      <a data-pin-do="embedUser" href="https://in.pinterest.com/time_froze/" data-pin-board-width="900" data-pin-scale-height="500" data-pin-scale-width="115"></a>
-    </div>
-    ${links([['View full profile on Pinterest', PROFILE.links.photos]])}`;
+    <ul class="tiles proj ach photo-tiles">${PHOTOS.map(([id, t, desc]) => `
+      <li><img class="tile-thumb" src="${pin(id)}" alt="${esc(t)}" loading="lazy"><strong>${esc(t)}</strong><span>${esc(desc)}</span></li>`).join('')}
+    </ul>
+    ${links([['View all on Pinterest', PROFILE.links.photos]])}`;
 }
 
 export const PROMO_RENDER = { projects: projectsHTML, about: aboutHTML, achievements: achievementsHTML, photography: photographyHTML };
 
 // Interactivity inside a rendered panel (project filters).
 export function wirePanel(root) {
-  // Load Pinterest widget script if a pin-board is present
-  const pinBoard = root.querySelector('.pin-board');
-  if (pinBoard && !document.querySelector('script[src*="pinit.js"]')) {
-    const s = document.createElement('script');
-    s.src = 'https://assets.pinterest.com/js/pinit.js';
-    s.async = true;
-    s.defer = true;
-    document.body.appendChild(s);
-  } else if (pinBoard && window.PinUtils) {
-    window.PinUtils.build();
-  }
   const btns = root.querySelectorAll('.filters button');
   btns.forEach((b) => b.addEventListener('click', () => {
     btns.forEach((x) => x.classList.toggle('on', x === b));

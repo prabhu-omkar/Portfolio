@@ -264,10 +264,9 @@ code { font: 0.86em ui-monospace, 'Cascadia Mono', Consolas, monospace; color: v
 .ledger strong a:hover { color: var(--accent); }
 .ledger span { color: var(--muted); font-size: 0.92rem; }
 
-/* pinterest embed */
-.pin-board { margin: 8px 0 24px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: #111318; }
-.pin-board span[data-pin-href] { border-radius: 6px !important; overflow: hidden; }
-.pin-board a[data-pin-do] { display: block; }
+/* photo tiles */
+.photo-tiles .tile-thumb { width: 100%; aspect-ratio: 3/2; object-fit: cover; border-radius: 3px; margin-bottom: 4px; filter: saturate(0.9); transition: filter 0.4s; }
+.photo-tiles li:hover .tile-thumb { filter: saturate(1.05); }
 .email { font-size: 0.95rem; user-select: all; }
 
 /* ---------- phones ---------- */
